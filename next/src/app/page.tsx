@@ -1,113 +1,249 @@
-import Image from "next/image";
+"use client"
+import React, { useEffect, useState } from 'react';
+import { useRouter } from 'next/navigation';
+import { jwtDecode } from 'jwt-decode';
 
-export default function Home() {
-  return (
-    <main className="flex min-h-screen flex-col items-center justify-between p-24">
-      <div className="z-10 w-full max-w-5xl items-center justify-between font-mono text-sm lg:flex">
-        <p className="fixed left-0 top-0 flex w-full justify-center border-b border-gray-300 bg-gradient-to-b from-zinc-200 pb-6 pt-8 backdrop-blur-2xl dark:border-neutral-800 dark:bg-zinc-800/30 dark:from-inherit lg:static lg:w-auto  lg:rounded-xl lg:border lg:bg-gray-200 lg:p-4 lg:dark:bg-zinc-800/30">
-          Get started by editing&nbsp;
-          <code className="font-mono font-bold">src/app/page.tsx</code>
-        </p>
-        <div className="fixed bottom-0 left-0 flex h-48 w-full items-end justify-center bg-gradient-to-t from-white via-white dark:from-black dark:via-black lg:static lg:size-auto lg:bg-none">
-          <a
-            className="pointer-events-none flex place-items-center gap-2 p-8 lg:pointer-events-auto lg:p-0"
-            href="https://vercel.com?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            By{" "}
-            <Image
-              src="/vercel.svg"
-              alt="Vercel Logo"
-              className="dark:invert"
-              width={100}
-              height={24}
-              priority
-            />
-          </a>
-        </div>
-      </div>
-
-      <div className="relative z-[-1] flex place-items-center before:absolute before:h-[300px] before:w-full before:-translate-x-1/2 before:rounded-full before:bg-gradient-radial before:from-white before:to-transparent before:blur-2xl before:content-[''] after:absolute after:-z-20 after:h-[180px] after:w-full after:translate-x-1/3 after:bg-gradient-conic after:from-sky-200 after:via-blue-200 after:blur-2xl after:content-[''] before:dark:bg-gradient-to-br before:dark:from-transparent before:dark:to-blue-700 before:dark:opacity-10 after:dark:from-sky-900 after:dark:via-[#0141ff] after:dark:opacity-40 sm:before:w-[480px] sm:after:w-[240px] before:lg:h-[360px]">
-        <Image
-          className="relative dark:drop-shadow-[0_0_0.3rem_#ffffff70] dark:invert"
-          src="/next.svg"
-          alt="Next.js Logo"
-          width={180}
-          height={37}
-          priority
-        />
-      </div>
-
-      <div className="mb-32 grid text-center lg:mb-0 lg:w-full lg:max-w-5xl lg:grid-cols-4 lg:text-left">
-        <a
-          href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className="group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2 className="mb-3 text-2xl font-semibold">
-            Docs{" "}
-            <span className="inline-block transition-transform group-hover:translate-x-1 motion-reduce:transform-none">
-              -&gt;
-            </span>
-          </h2>
-          <p className="m-0 max-w-[30ch] text-sm opacity-50">
-            Find in-depth information about Next.js features and API.
-          </p>
-        </a>
-
-        <a
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          className="group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2 className="mb-3 text-2xl font-semibold">
-            Learn{" "}
-            <span className="inline-block transition-transform group-hover:translate-x-1 motion-reduce:transform-none">
-              -&gt;
-            </span>
-          </h2>
-          <p className="m-0 max-w-[30ch] text-sm opacity-50">
-            Learn about Next.js in an interactive course with&nbsp;quizzes!
-          </p>
-        </a>
-
-        <a
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className="group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2 className="mb-3 text-2xl font-semibold">
-            Templates{" "}
-            <span className="inline-block transition-transform group-hover:translate-x-1 motion-reduce:transform-none">
-              -&gt;
-            </span>
-          </h2>
-          <p className="m-0 max-w-[30ch] text-sm opacity-50">
-            Explore starter templates for Next.js.
-          </p>
-        </a>
-
-        <a
-          href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className="group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2 className="mb-3 text-2xl font-semibold">
-            Deploy{" "}
-            <span className="inline-block transition-transform group-hover:translate-x-1 motion-reduce:transform-none">
-              -&gt;
-            </span>
-          </h2>
-          <p className="m-0 max-w-[30ch] text-balance text-sm opacity-50">
-            Instantly deploy your Next.js site to a shareable URL with Vercel.
-          </p>
-        </a>
-      </div>
-    </main>
-  );
+interface JwtPayload {
+  username: string;
+  exp: number;
 }
+
+const Home = () => {
+  const router = useRouter();
+  const [userData, setUserData] = useState({
+    id: '',
+    email: '',
+    name: '',
+    firstname: '',
+    address: '',
+    phone: '',
+    card: '',
+    crypto: '',
+    expiry: '',
+  });
+
+  const [message, setMessage] = useState('');
+  const [errors, setErrors] = useState<{
+    name?: string;
+    firstname?: string;
+    address?: string;
+    phone?: string;
+    card?: string;
+    crypto?: string;
+    expiry?: string;
+  }>({});
+
+  useEffect(() => {
+    const token = localStorage.getItem('token');
+    if (!token) {
+      router.push('/login');
+    } else {
+      const decodedToken = jwtDecode<JwtPayload>(token);
+      const email = decodedToken.username;
+
+      const fetchData = async () => {
+        try {
+          const response = await fetch(`http://localhost:8000/api/users?page=1&email=${email}`, {
+            headers: {
+              'Authorization': `Bearer ${token}`
+            }
+          });
+          const data = await response.json();
+          if (data['hydra:member'].length > 0) {
+            setUserData(data['hydra:member'][0]);
+          }
+        } catch (error) {
+          console.error('Error fetching user data:', error);
+          router.push('/login');
+        }
+      };
+      fetchData();
+    }
+  }, [router]);
+
+  const handleLogout = () => {
+    localStorage.removeItem('token');
+    router.push('/login');
+  };
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+    setUserData((prevData) => ({
+      ...prevData,
+      [name]: value,
+    }));
+    setErrors({
+      ...errors,
+      [name]: '',
+    });
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+
+    let valid = true;
+    const newErrors: typeof errors = {};
+
+    if (userData.name.length < 2) {
+      newErrors.name = 'Le nom doit contenir au moins 2 caractères.';
+      valid = false;
+    }
+
+    if (userData.firstname.length < 2) {
+      newErrors.firstname = 'Le prénom doit contenir au moins 2 caractères.';
+      valid = false;
+    }
+
+    if (userData.address.length < 5) {
+      newErrors.address = 'L\'adresse doit contenir au moins 5 caractères.';
+      valid = false;
+    }
+
+    const phoneRegex = /^(0|\+33)[1-9]([-. ]?[0-9]{2}){4}$/;
+    if (!phoneRegex.test(userData.phone)) {
+      newErrors.phone = 'Veuillez entrer un numéro de téléphone français valide (ex: 0601020304).';
+      valid = false;
+    }
+
+    if (userData.card.length !== 16 || !(/^\d+$/.test(userData.card))) {
+      newErrors.card = 'Le numéro de carte doit être composé de 16 chiffres.';
+      valid = false;
+    }
+
+    if (!Number.isInteger(parseInt(userData.crypto)) || userData.crypto.length !== 3) {
+      newErrors.crypto = 'Le cryptogramme visuel doit être un entier composé de trois chiffres.';
+      valid = false;
+    }
+
+    const expiryRegex = /^(0[1-9]|1[0-2])\/[0-9]{2}$/;
+    const currentDate = new Date();
+    const currentYear = currentDate.getFullYear() % 100;
+    const currentMonth = currentDate.getMonth() + 1;
+    const [enteredMonth, enteredYear] = userData.expiry.split('/').map((value) => parseInt(value));
+
+    if (
+      !expiryRegex.test(userData.expiry) ||
+      (enteredYear < currentYear) ||
+      (enteredYear === currentYear && enteredMonth < currentMonth)
+    ) {
+      newErrors.expiry = 'Veuillez entrer une date d\'expiration valide (ex: 18/04).';
+      valid = false;
+    }
+
+    if (!valid) {
+      setErrors(newErrors);
+      return;
+    }
+
+    const token = localStorage.getItem('token');
+    if (token) {
+      try {
+        const response = await fetch(`http://localhost:8000/api/users/${userData.id}`, {
+          method: 'PUT',
+          headers: {
+            'Content-Type': 'application/ld+json',
+            'Authorization': `Bearer ${token}`
+          },
+          body: JSON.stringify(userData)
+        });
+
+        if (response.ok) {
+          const data = await response.json();
+          setUserData(data);
+          setMessage('Données utilisateur mises à jour avec succès');
+        } else {
+          throw new Error('Failed to update user data');
+        }
+      } catch (error) {
+        console.error('Error updating user data:', error);
+        setMessage('Échec de la mise à jour des données utilisateur');
+      }
+    }
+  };
+
+  useEffect(() => {
+    const token = localStorage.getItem('token');
+    if (token) {
+      try {
+        const decodedToken = jwtDecode<JwtPayload>(token);
+
+        if (decodedToken.exp * 1000 < new Date().getTime()) {
+          localStorage.removeItem('token');
+          router.push('/login');
+        }
+
+      } catch (error) {
+        console.log('TOKEN BROKEN');
+        localStorage.removeItem('token');
+        router.push('/login');
+      }
+    } else {
+      router.push('/login');
+    }
+  }, [router]);
+
+  return (
+    <div className="min-h-screen flex items-center justify-center bg-gray-100">
+      <div className="bg-white p-8 rounded-lg shadow-lg">
+        <h1 className="text-2xl font-bold mb-4">Bienvenue sur la page d'accueil</h1>
+        <p className="text-gray-700 mb-4">Vous êtes connecté avec succès.</p>
+
+        <form onSubmit={handleSubmit} className="space-y-4">
+          <div>
+            <label className="block text-gray-700">Mail</label>
+            <p className="w-full px-4 py-2 border rounded">{userData.email}</p>
+          </div>
+          <div>
+            <label className="block text-gray-700">Name</label>
+            <input type="text" name="name" value={userData.name} onChange={handleChange} className="w-full px-4 py-2 border rounded" />
+            {errors.name && <p className="text-red-500">{errors.name}</p>}
+          </div>
+          <div>
+            <label className="block text-gray-700">Firstname</label>
+            <input type="text" name="firstname" value={userData.firstname} onChange={handleChange} className="w-full px-4 py-2 border rounded" />
+            {errors.firstname && <p className="text-red-500">{errors.firstname}</p>}
+          </div>
+          <div>
+            <label className="block text-gray-700">Address</label>
+            <input type="text" name="address" value={userData.address} onChange={handleChange} className="w-full px-4 py-2 border rounded" />
+            {errors.address && <p className="text-red-500">{errors.address}</p>}
+          </div>
+          <div>
+            <label className="block text-gray-700">Phone</label>
+            <input type="text" name="phone" value={userData.phone} onChange={handleChange} className="w-full px-4 py-2 border rounded" />
+            {errors.phone && <p className="text-red-500">{errors.phone}</p>}
+          </div>
+          <div>
+            <label className="block text-gray-700">Card</label>
+            <input type="text" name="card" value={userData.card} onChange={handleChange} className="w-full px-4 py-2 border rounded" />
+            {errors.card && <p className="text-red-500">{errors.card}</p>}
+          </div>
+          <div>
+            <label className="block text-gray-700">Crypto</label>
+            <input type="text" name="crypto" value={userData.crypto} onChange={handleChange} className="w-full px-4 py-2 border rounded" />
+            {errors.crypto && <p className="text-red-500">{errors.crypto}</p>}
+          </div>
+          <div>
+            <label className="block text-gray-700">Expiry</label>
+            <input type="text" name="expiry" value={userData.expiry} onChange={handleChange} className="w-full px-4 py-2 border rounded" />
+            {errors.expiry && <p className="text-red-500">{errors.expiry}</p>}
+          </div>
+          <button type="submit" className="mt-6 bg-blue-500 text-white px-4 py-2 rounded">Mettre à jour</button>
+        </form>
+
+        <button onClick={handleLogout} className="mt-6 bg-red-500 text-white px-4 py-2 rounded">Se déconnecter</button>
+        {message && <p className="text-green-500 mt-4">{message}</p>}
+        <form>
+          <div>
+            <h2>Rechercher une amende</h2>
+            <input className="w-full px-4 py-2 border rounded"></input>
+
+            <button type="submit" className="mt-6 bg-blue-500 text-white px-4 py-2 rounded">Rechercher</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  );
+};
+
+export default Home;

@@ -60,3 +60,4 @@
 /symfony/public/assets/
 /symfony/assets/vendor/
 ###< symfony/asset-mapper ###
+/symfony/
