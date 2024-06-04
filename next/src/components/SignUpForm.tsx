@@ -1,3 +1,4 @@
+"use client"
 import React, { useState } from 'react';
 import Link from 'next/link';
 
@@ -37,6 +38,20 @@ const SignUpForm = () => {
       ...errors,
       [name]: '',
     });
+  };
+
+  const luhnValidation = (number: string) => {
+    const digits = number.split('').map(Number);
+
+    for (let i = digits.length - 2; i >= 0; i -= 2) {
+      digits[i] *= 2;
+      if (digits[i] > 9) {
+        digits[i] -= 9;
+      }
+    }
+
+    const total = digits.reduce((acc, curr) => acc + curr, 0);
+    return total % 10 === 0;
   };
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
@@ -84,6 +99,11 @@ const SignUpForm = () => {
     const expiryRegex = /^(0[1-9]|[12][0-9]|3[01])\/(0[1-9]|1[0-2])$/;
     if (!expiryRegex.test(formData.expiry)) {
       newErrors.expiry = 'Veuillez entrer une date d\'expiration valide (ex: 18/04).';
+      valid = false;
+    }
+
+    if (!luhnValidation(formData.card)) {
+      newErrors.card = 'Le numéro de carte ne respecte pas la formule de Luhn.';
       valid = false;
     }
 
@@ -232,8 +252,7 @@ const SignUpForm = () => {
             S'inscrire
           </button>
         </form>
-        {message && <p className="text-red-500 mt-4 text-center">{message}</p>}
-
+        {message && <p className="text-green-500 mt-4 text-center">{message}</p>}
         <div className="text-center mt-4">
           <Link href="/login">
             <p className="text-blue-500 hover:underline">Déjà un compte ? Connectez-vous</p>

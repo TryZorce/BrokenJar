@@ -4,10 +4,15 @@ namespace App\Entity;
 
 use ApiPlatform\Metadata\ApiResource;
 use App\Repository\FineRepository;
+use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use ApiPlatform\Doctrine\Orm\Filter\SearchFilter;
+use ApiPlatform\Metadata\ApiFilter;
 
 #[ORM\Entity(repositoryClass: FineRepository::class)]
 #[ApiResource]
+
+#[ApiFilter(SearchFilter::class, properties: ['code' => 'exact'])]
 class Fine
 {
     #[ORM\Id]
