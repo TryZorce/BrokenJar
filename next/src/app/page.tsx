@@ -8,9 +8,28 @@ interface JwtPayload {
   exp: number;
 }
 
+interface UserData {
+  id: string;
+  email: string;
+  name: string;
+  firstname: string;
+  address: string;
+  phone: string;
+  card: string;
+  crypto: string;
+  expiry: string;
+}
+
+interface Fine {
+  id: string;
+  name: string;
+  description: string;
+  amount: number;
+}
+
 const Home = () => {
   const router = useRouter();
-  const [userData, setUserData] = useState({
+  const [userData, setUserData] = useState<UserData>({
     id: '',
     email: '',
     name: '',
@@ -33,32 +52,52 @@ const Home = () => {
     expiry?: string;
   }>({});
 
+  const [fines, setFines] = useState<Fine[]>([]);
+
+  const fetchFines = async (email: string, token: string) => {
+    console.log('Fetching fines...');
+    try {
+      const response = await fetch(`http://localhost:8000/api/fines?page=1&email=${email}`, {
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }
+      });
+      const data = await response.json();
+      setFines(data['hydra:member']);
+    } catch (error) {
+      console.error('Error fetching fines:', error);
+    }
+  };
+
   useEffect(() => {
     const token = localStorage.getItem('token');
     if (!token) {
       router.push('/login');
-    } else {
-      const decodedToken = jwtDecode<JwtPayload>(token);
-      const email = decodedToken.username;
-
-      const fetchData = async () => {
-        try {
-          const response = await fetch(`http://localhost:8000/api/users?page=1&email=${email}`, {
-            headers: {
-              'Authorization': `Bearer ${token}`
-            }
-          });
-          const data = await response.json();
-          if (data['hydra:member'].length > 0) {
-            setUserData(data['hydra:member'][0]);
-          }
-        } catch (error) {
-          console.error('Error fetching user data:', error);
-          router.push('/login');
-        }
-      };
-      fetchData();
+      return;
     }
+    
+    const decodedToken = jwtDecode<JwtPayload>(token);
+    const email = decodedToken.username;
+  
+    const fetchData = async () => {
+      try {
+        const response = await fetch(`http://localhost:8000/api/users?page=1&email=${email}`, {
+          headers: {
+            'Authorization': `Bearer ${token}`
+          }
+        });
+        const data = await response.json();
+        if (data['hydra:member'].length > 0) {
+          setUserData(data['hydra:member'][0]);
+          fetchFines(data['hydra:member'][0].id, token);
+        }
+      } catch (error) {
+        console.error('Error fetching user data:', error);
+        router.push('/login');
+      }
+    };
+    
+    fetchData();
   }, [router]);
 
   const handleLogout = () => {
@@ -241,6 +280,14 @@ const Home = () => {
             <button type="submit" className="mt-6 bg-blue-500 text-white px-4 py-2 rounded">Rechercher</button>
           </div>
         </form>
+        <h2 className="text-2xl font-bold mb-4">Amendes</h2>
+        <ul>
+          {fines.map((fine) => (
+            <li key={fine.id}>
+              {fine.name} - {fine.description} - {fine.value} €
+            </li>
+          ))}
+        </ul>
       </div>
     </div>
   );
