@@ -1,11 +1,18 @@
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 
 const LoginForm = () => {
     const router = useRouter();
     const [formData, setFormData] = useState({ username: '', password: '' });
     const [message, setMessage] = useState('');
+
+    useEffect(() => {
+        const token = localStorage.getItem('token');
+        if (token) {
+            router.push('/');
+        }
+    }, []);
 
     const handleChange = (e: { target: { name: any; value: any; }; }) => {
         const { name, value } = e.target;
