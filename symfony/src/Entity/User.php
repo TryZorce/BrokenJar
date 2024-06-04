@@ -18,12 +18,12 @@ use Symfony\Component\Security\Core\User\UserInterface;
 #[ORM\Entity(repositoryClass: UserRepository::class)]
 #[ORM\Table(name: '`user`')]
 #[ApiResource]
-#[ApiResource(operations: [
+#[ApiResource(
+    operations: [
         new Post(
             controller: SignUpController::class
         ),
-        new Get(
-        )
+        new Get()
     ]
 )]
 #[ApiFilter(SearchFilter::class, properties: ['email' => 'exact'])]

@@ -12,7 +12,10 @@ use ApiPlatform\Metadata\ApiFilter;
 #[ORM\Entity(repositoryClass: FineRepository::class)]
 #[ApiResource]
 
-#[ApiFilter(SearchFilter::class, properties: ['code' => 'exact'])]
+#[ApiFilter(SearchFilter::class, properties: [
+    'code' => 'exact',
+    'email' => 'exact'
+])]
 class Fine
 {
     #[ORM\Id]
