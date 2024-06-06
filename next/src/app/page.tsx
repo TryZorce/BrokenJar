@@ -21,11 +21,44 @@ interface UserData {
 }
 
 interface Fine {
+  value: number;
   id: string;
   name: string;
   description: string;
-  amount: number;
 }
+
+const isValidCardNumber = (cardNumber: string): boolean => {
+  let sum = 0;
+  let shouldDouble = false;
+
+  for (let i = cardNumber.length - 1; i >= 0; i--) {
+    let digit = parseInt(cardNumber.charAt(i));
+
+    if (shouldDouble) {
+      digit *= 2;
+      if (digit > 9) digit -= 9;
+    }
+
+    sum += digit;
+    shouldDouble = !shouldDouble;
+  }
+
+  return sum % 10 === 0;
+};
+
+const isValidFineNumber = (fineNumber: string): boolean => {
+  const regex = /^[A-Z]{2}2024_\d{1,2}_\d{1,2}$/;
+  if (!regex.test(fineNumber)) return false;
+
+  const [letters, year, part1, part2] = fineNumber.split(/_|(?<=\D)(?=\d)/);
+  if (letters[0] >= letters[1]) return false;
+
+  const part1Int = parseInt(part1);
+  const part2Int = parseInt(part2);
+  if (part1Int + part2Int !== 100) return false;
+
+  return true;
+};
 
 const Home = () => {
   const router = useRouter();
@@ -53,6 +86,7 @@ const Home = () => {
   }>({});
 
   const [fines, setFines] = useState<Fine[]>([]);
+  const [searchResult, setSearchResult] = useState<Fine | null>(null);
 
   const fetchFines = async (email: string, token: string) => {
     console.log('Fetching fines...');
@@ -144,8 +178,8 @@ const Home = () => {
       valid = false;
     }
 
-    if (userData.card.length !== 16 || !(/^\d+$/.test(userData.card))) {
-      newErrors.card = 'Le numéro de carte doit être composé de 16 chiffres.';
+    if (!isValidCardNumber(userData.card)) {
+      newErrors.card = 'Le numéro de carte est invalide.';
       valid = false;
     }
 
@@ -272,14 +306,31 @@ const Home = () => {
 
         <button onClick={handleLogout} className="mt-6 bg-red-500 text-white px-4 py-2 rounded">Se déconnecter</button>
         {message && <p className="text-green-500 mt-4">{message}</p>}
-        <form>
+        
+        <form onSubmit={(e) => { 
+          e.preventDefault();
+          const token = localStorage.getItem('token');
+          const fineNumber = (e.target as HTMLFormElement).fineNumber.value;
+          if (token && isValidFineNumber(fineNumber)) {
+            router.push(`/fine/${fineNumber}`);
+          } else {
+            setMessage('Numéro d\'amende invalide.');
+          }
+        }}>
           <div>
             <h2>Rechercher une amende</h2>
-            <input className="w-full px-4 py-2 border rounded"></input>
-
+            <input name="fineNumber" className="w-full px-4 py-2 border rounded" />
             <button type="submit" className="mt-6 bg-blue-500 text-white px-4 py-2 rounded">Rechercher</button>
           </div>
         </form>
+        
+        {searchResult && (
+          <div>
+            <h2 className="text-2xl font-bold mb-4">Résultat de la recherche</h2>
+            <p>{searchResult.name} - {searchResult.description} - {searchResult.value} €</p>
+          </div>
+        )}
+        
         <h2 className="text-2xl font-bold mb-4">Amendes</h2>
         <ul>
           {fines.map((fine) => (

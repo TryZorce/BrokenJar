@@ -16,6 +16,7 @@ const Fine = () => {
     const { code } = useParams();
     const [fine, setFine] = useState<any>(null);
     const [currentUser, setCurrentUser] = useState<any>(null);
+    const [fineNotFound, setFineNotFound] = useState<boolean>(false);
 
     useEffect(() => {
         const token = localStorage.getItem('token');
@@ -33,10 +34,11 @@ const Fine = () => {
                     if (data['hydra:member'].length > 0) {
                         setFine(data['hydra:member'][0]);
                     } else {
-                        throw new Error('Fine not found');
+                        setFineNotFound(true);
                     }
                 } catch (error) {
                     console.error('Error fetching fine:', error);
+                    setFineNotFound(true);
                 }
             };
 
@@ -44,7 +46,6 @@ const Fine = () => {
                 fetchFine();
             }
 
-            const token = localStorage.getItem('token');
             if (token) {
                 const decodedToken = jwtDecode<JwtPayload>(token);
                 const email = decodedToken.username;
@@ -97,17 +98,18 @@ const Fine = () => {
 
     const isTokenExpired = (token: string) => {
         const decodedToken = jwtDecode<JwtPayload>(token);
-        if (decodedToken.exp * 1000 < new Date().getTime()) { // Check if the token is expired
-            return true;
-        } else {
-            return false;
-        }
+        return decodedToken.exp * 1000 < new Date().getTime();
     };
 
     return (
         <div className="min-h-screen flex items-center justify-center bg-gray-100 ">
             <div className="bg-white p-8 rounded-lg shadow-lg flex flex-col">
-                {fine ? (
+                {fineNotFound ? (
+                    <div className="text-center">
+                        <p className="text-red-500 mb-4">Cette amende n'existe pas</p>
+                        <Link href="/" className="mt-6 bg-blue-500 text-white px-4 py-2 rounded text-center">Retour au profil</Link>
+                    </div>
+                ) : fine ? (
                     <div className="space-y-4">
                         <div>
                             <p className="block text-gray-700 mb-2">Amende numéro : {fine.code}</p>
@@ -121,15 +123,16 @@ const Fine = () => {
                         <div>
                             <p className="block text-gray-700 mb-2">Prix : {fine.value}</p>
                         </div>
-
+                        {!fine?.pay && (
+                            <button onClick={handlePayFine} className="mt-6 bg-blue-500 text-white px-4 py-2 rounded">Payer</button>
+                        )}
+                        {fine?.pay && (
+                            <p className="mt-6 text-green-500">Cette amende a déjà été payée</p>
+                        )}
                     </div>
                 ) : (
                     <p className="text-center">Chargement...</p>
                 )}
-                {!fine?.pay && <button onClick={handlePayFine} className="mt-6 bg-blue-500 text-white px-4 py-2 rounded">Payer</button>}
-                {fine?.pay && <p className="mt-6 text-green-500">Cette amende a déjà été payer</p>}
-
-                <Link href="/" className="mt-6 bg-blue-500 text-white px-4 py-2 rounded text-center"> Retour au profil </Link>
             </div>
         </div>
     );
