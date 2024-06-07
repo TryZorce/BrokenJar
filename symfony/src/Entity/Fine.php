@@ -6,12 +6,18 @@ use ApiPlatform\Metadata\ApiResource;
 use App\Repository\FineRepository;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use ApiPlatform\Metadata\Get;
 use ApiPlatform\Doctrine\Orm\Filter\SearchFilter;
 use ApiPlatform\Metadata\ApiFilter;
+use ApiPlatform\Metadata\GetCollection;
 use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: FineRepository::class)]
-#[ApiResource]
+#[ApiResource(
+    operations: [
+        new GetCollection()
+    ]
+)]
 #[ApiFilter(SearchFilter::class, properties: [
     'code' => 'exact',
     'email' => 'exact'
