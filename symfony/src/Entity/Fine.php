@@ -8,10 +8,10 @@ use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use ApiPlatform\Doctrine\Orm\Filter\SearchFilter;
 use ApiPlatform\Metadata\ApiFilter;
+use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: FineRepository::class)]
 #[ApiResource]
-
 #[ApiFilter(SearchFilter::class, properties: [
     'code' => 'exact',
     'email' => 'exact'
@@ -23,21 +23,31 @@ class Fine
     #[ORM\Column]
     private ?int $id = null;
 
+    #[Assert\NotBlank]
+    #[Assert\Length(min: 3)]
     #[ORM\Column(length: 255)]
     private ?string $code = null;
 
+    #[Assert\NotBlank]
+    #[Assert\Length(min: 3)]
     #[ORM\Column(length: 255)]
     private ?string $name = null;
 
+    #[Assert\NotBlank]
+    #[Assert\Length(min: 3)]
     #[ORM\Column(length: 255)]
     private ?string $description = null;
 
-    #[ORM\Column]
+    #[Assert\NotBlank]
+    #[Assert\Type(type: 'float')]
+    #[ORM\Column(type: Types::FLOAT)]
     private ?float $value = null;
 
-    #[ORM\Column]
+    #[Assert\NotNull]
+    #[ORM\Column(type: 'boolean')]
     private ?bool $pay = null;
 
+    #[Assert\NotNull]
     #[ORM\ManyToOne(inversedBy: 'fines')]
     private ?User $email = null;
 

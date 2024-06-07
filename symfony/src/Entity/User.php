@@ -14,6 +14,7 @@ use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
+use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: UserRepository::class)]
 #[ORM\Table(name: '`user`')]
@@ -35,6 +36,8 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private ?int $id = null;
 
     #[ORM\Column(length: 180)]
+    #[Assert\NotBlank(message: "L'email est requis.")]
+    #[Assert\Email(message: "L'email n'est pas valide.")]
     private ?string $email = null;
 
     /**
@@ -49,26 +52,57 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column]
     private ?string $password = null;
 
+    #[ORM\Column(length: 16)]
+    #[Assert\NotBlank(message: "Le numéro de carte est requis.")]
+    #[Assert\Regex(
+        pattern: "/^[0-9]{16}$/",
+        message: "Le numéro de carte doit contenir exactement 16 chiffres."
+    )]
+    private ?string $card = null;
+
+    #[ORM\Column(length: 3)]
+    #[Assert\NotBlank(message: "Le CVV est requis.")]
+    #[Assert\Regex(
+        pattern: "/^[0-9]{3}$/",
+        message: "Le CVV doit être un entier composé de trois chiffres."
+    )]
+    private ?string $crypto = null;
+
+    #[ORM\Column(length: 5)]
+    #[Assert\NotBlank(message: "La date d'expiration est requise.")]
+    #[Assert\Regex(
+        pattern: "/^(0[1-9]|1[0-2])\/[0-9]{2}$/",
+        message: "Le format de la date d'expiration doit être MM/YY."
+    )]
+    private ?string $expiry = null;
+
+    #[ORM\Column(length: 255)]
+    #[Assert\NotBlank(message: "Le numéro de téléphone est requis.")]
+    #[Assert\Regex(
+        pattern: "/^0[1-9]([-. ]?[0-9]{2}){4}$/",
+        message: "Le numéro de téléphone n'est pas valide."
+    )]
+    private ?string $phone = null;
+
+    #[Assert\Length(min: 3, minMessage: "Le nom doit contenir au moins {{ limit }} caractères.")]
+    #[Assert\Regex(
+        pattern: "/^[A-Za-zÀ-ÖØ-öø-ÿ '-]+$/",
+        message: "Les caractères saisis ne sont pas corrects."
+    )]
     #[ORM\Column(length: 255)]
     private ?string $name = null;
 
+    #[Assert\Length(min: 3, minMessage: "Le prénom doit contenir au moins {{ limit }} caractères.")]
+    #[Assert\Regex(
+        pattern: "/^[A-Za-zÀ-ÖØ-öø-ÿ '-]+$/",
+        message: "Les caractères saisis ne sont pas corrects."
+    )]
     #[ORM\Column(length: 255)]
     private ?string $firstname = null;
 
+    #[Assert\Length(min: 5, minMessage: "L'adresse doit contenir au moins {{ limit }} caractères.")]
     #[ORM\Column(length: 255)]
     private ?string $address = null;
-
-    #[ORM\Column(length: 255)]
-    private ?string $phone = null;
-
-    #[ORM\Column(length: 255)]
-    private ?string $card = null;
-
-    #[ORM\Column(length: 255)]
-    private ?string $crypto = null;
-
-    #[ORM\Column(length: 255)]
-    private ?string $expiry = null;
 
     /**
      * @var Collection<int, Fine>
@@ -116,7 +150,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function getRoles(): array
     {
         $roles = $this->roles;
-        // guarantee every user at least has ROLE_USER
         $roles[] = 'ROLE_USER';
 
         return array_unique($roles);
@@ -152,8 +185,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
      */
     public function eraseCredentials(): void
     {
-        // If you store any temporary, sensitive data on the user, clear it here
-        // $this->plainPassword = null;
     }
 
     public function getName(): ?string
@@ -261,7 +292,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function removeFine(Fine $fine): static
     {
         if ($this->fines->removeElement($fine)) {
-            // set the owning side to null (unless already changed)
             if ($fine->getEmail() === $this) {
                 $fine->setEmail(null);
             }

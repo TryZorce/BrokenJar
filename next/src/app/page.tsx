@@ -1,7 +1,7 @@
 "use client"
 import React, { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { jwtDecode } from 'jwt-decode';
+import {jwtDecode} from 'jwt-decode';
 
 interface JwtPayload {
   username: string;
@@ -47,17 +47,15 @@ const isValidCardNumber = (cardNumber: string): boolean => {
 };
 
 const isValidFineNumber = (fineNumber: string): boolean => {
-  const regex = /^[A-Z]{2}2024_\d{1,2}_\d{1,2}$/;
-  if (!regex.test(fineNumber)) return false;
-
-  const [letters, year, part1, part2] = fineNumber.split(/_|(?<=\D)(?=\d)/);
-  if (letters[0] >= letters[1]) return false;
-
-  const part1Int = parseInt(part1);
-  const part2Int = parseInt(part2);
-  if (part1Int + part2Int !== 100) return false;
-
-  return true;
+  const currentYear = new Date().getFullYear().toString();
+  const regex = new RegExp(`^(?:(?=([A-Y])([A-Z]))\\1\\2)${currentYear}_(\\d{1,2})_(\\d{1,2})$`);
+  const match = regex.exec(fineNumber);
+  if (match) {
+    const firstDigitGroup = parseInt(match[3]);
+    const secondDigitGroup = parseInt(match[4]);
+    return firstDigitGroup + secondDigitGroup === 100;
+  }
+  return false;
 };
 
 const Home = () => {
@@ -89,7 +87,6 @@ const Home = () => {
   const [searchResult, setSearchResult] = useState<Fine | null>(null);
 
   const fetchFines = async (email: string, token: string) => {
-    console.log('Fetching fines...');
     try {
       const response = await fetch(`http://localhost:8000/api/fines?page=1&email=${email}`, {
         headers: {
