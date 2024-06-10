@@ -20,9 +20,9 @@ const Fine = () => {
 
     useEffect(() => {
         const token = localStorage.getItem('token');
-        if (!token || isTokenExpired(token)) { // Check for token expiration
-            localStorage.removeItem('token'); // Remove the token
-            router.push('/login'); // Redirect to the login page
+        if (!token || isTokenExpired(token)) { 
+            localStorage.removeItem('token'); 
+            router.push('/login'); 
         } else {
             const fetchFine = async () => {
                 try {

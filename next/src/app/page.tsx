@@ -196,7 +196,7 @@ const Home = () => {
       (enteredYear < currentYear) ||
       (enteredYear === currentYear && enteredMonth < currentMonth)
     ) {
-      newErrors.expiry = 'Veuillez entrer une date d\'expiration valide (ex: 18/04).';
+      newErrors.expiry = 'Veuillez entrer une date d\'expiration valide (ex: 10/26).';
       valid = false;
     }
 

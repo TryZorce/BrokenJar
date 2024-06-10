@@ -10,12 +10,14 @@ use ApiPlatform\Metadata\Get;
 use ApiPlatform\Doctrine\Orm\Filter\SearchFilter;
 use ApiPlatform\Metadata\ApiFilter;
 use ApiPlatform\Metadata\GetCollection;
+use ApiPlatform\Metadata\Put;
 use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: FineRepository::class)]
 #[ApiResource(
     operations: [
-        new GetCollection()
+        new GetCollection(),
+        new Put(),
     ]
 )]
 #[ApiFilter(SearchFilter::class, properties: [

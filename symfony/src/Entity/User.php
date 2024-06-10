@@ -71,7 +71,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(length: 5)]
     #[Assert\NotBlank(message: "La date d'expiration est requise.")]
     #[Assert\Regex(
-        pattern: "/^(0[1-9]|1[0-2])\/[0-9]{2}$/",
+        pattern: "/^(0[1-9]|1[0-2])\/?([0-9]{2})$/",
         message: "Le format de la date d'expiration doit être MM/YY."
     )]
     private ?string $expiry = null;
