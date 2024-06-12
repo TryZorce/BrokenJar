@@ -8,7 +8,7 @@
 /next/.yarn/install-state.gz
 
 # testing
-/next//coverage
+/next/coverage
 
 # next.js
 /next/.next/
@@ -60,5 +60,4 @@
 ###> symfony/asset-mapper ###
 /symfony/public/assets/
 /symfony/assets/vendor/
-###< symfony/asset-mapper ###
-/symfony/
+###< symfony/asset-mapper ##
